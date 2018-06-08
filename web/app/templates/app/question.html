@@ -1,0 +1,227 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} ประเมิน {{poster.poster_id}} {% endblock %}
+{% block content%}
+<div id="content" class="uk-width-1-1">
+  <div class="uk-container uk-container-center uk-margin-top uk-margin-large-bottom">
+    <div class="uk-card uk-card-default uk-card-body">
+      <article class="uk-article">
+        <h1 class="uk-article-title"> {{poster.poster_id}}: {{poster.title}} </h1>
+      </article>
+    </div>
+
+    <form @submit.prevent="submitResult()">
+      <div class="uk-grid" data-uk-grid-margin>
+        <div
+          class="uk-width-1-1 padded"
+          v-for="question, i in questions"
+        >
+          <div class="uk-card uk-card-default uk-card-body">
+            <p> [[ question.message ]] </p>
+            <div uk-grid style="padding: 20px">
+              <span style="text-align: center; vertical-align: middle;"> คะแนนที่ให้ </span>
+              <span> <input class="uk-input" type="number" v-model.number="scores[question.id]" :max="question.max_score"> </span>
+              <span> เต็ม </span>
+              <span> [[question.max_score]] </span>
+            </div>
+            <br>
+            <br>
+            <input class="slider" type="range" :qid="question.id" :max="question.max_score" @input="rangeHandle" @change="rangeHandle"
+            v-model.number="scores[question.id]">
+          </div>
+          <hr class="uk-divider-icon">
+        </div>
+      </div>
+
+      <div class="uk-card uk-card-default uk-card-body">
+        <article class="uk-article">
+          <h1> {{poster.poster_id}}: {{poster.title}} </h1>
+          <p> ให้คะแนนรวม [[totalScore]] จาก [[totalMaxScore]] </p>
+          <br>
+          <button class="uk-button uk-button-secondary uk-button-large mybutton" type="submit"> ส่ง </button>
+        </article>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  var content = new Vue({
+    el: '#content',
+    delimiters: ['[[', ']]'],
+    data: function () {
+      return {
+        'questions': null,
+        'scores': null,
+        'totalScore': 0,
+        'totalMaxScore': 0,
+      }
+    },
+
+    methods: {
+      calculateTotalScore: function () {
+        this.totalScore = 0
+        for (let k in this.scores) {
+          let value = this.scores[k]
+          this.totalScore += value
+        }
+      },
+
+      rangeHandle: function (e) {
+        let qid = e.target.attributes.qid.value
+        let val = e.target.value
+        this.scores[qid] = parseInt(val)
+        this.calculateTotalScore()
+      },
+
+      submitResult: function (e) {
+        let payload = {}
+        payload['user'] = "{{user.id}}"
+        payload['event'] = "{{event.id}}"
+        payload['poster'] = "{{poster.id}}"
+        payload['scores'] = this.scores
+        payload['questions'] = this.questions
+        axios.post('/sendscore/', payload)
+          .then((response) => {
+            if (response.status == 200) {
+              alert('ส่งคะแนนเรียบร้อย')
+              window.location.href = "/"
+            }
+          })
+          .catch((error) => {
+            alert("เกิดข้อผิดพลาด กรุณาลองใหม่")
+          })
+      }
+    },
+
+    mounted: function () {
+      axios.get('/qdetail/{{poster.id}}/')
+        .then((response) => {
+          console.log(response)
+          this.scores = {}
+          data = response.data
+          this.totalMaxScore = 0
+          this.scores = data['scores']
+          this.questions = data['questions']
+          this.questions.forEach((q) => {
+            this.totalMaxScore += q.max_score
+          })
+          this.calculateTotalScore()
+        })
+    }
+  })
+</script>
+
+<style>
+  input, p, span, button {
+    font-size: 32px
+  }
+
+  .padded {
+    padding-top: 20px;
+  }
+
+  .mybutton {
+    color: white;
+    background-color: #4babcb;
+    font-size: 30px;
+    width: 20%;
+    height: 75px;
+  }
+
+  .uk-card-default {
+    background: #f9f9f9;
+    color: #666;
+    box-shadow: 0 5px 15px rgba(0,0,0,.08);
+  }
+
+  /* slider */
+  input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+    margin: 13.8px 0;
+  }
+  input[type=range]:focus {
+    outline: none;
+  }
+  input[type=range]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 22.4px;
+    cursor: pointer;
+    box-shadow: 1.4px 1.4px 1.7px #f1f1f3, 0px 0px 1.4px #ffffff;
+    background: #f1f1f3;
+    border-radius: 15.1px;
+    border: 0.8px solid #f1f1f3;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    box-shadow: 3.1px 3.1px 8.8px #4babcb, 0px 0px 3.1px #5fb4d1;
+    border: 5px solid #4babcb;
+    height: 50px;
+    width: 50px;
+    border-radius: 50px;
+    background: #4babcb;
+    cursor: pointer;
+    -webkit-appearance: none;
+    margin-top: -14.6px;
+  }
+  input[type=range]:focus::-webkit-slider-runnable-track {
+    background: #ffffff;
+  }
+  input[type=range]::-moz-range-track {
+    width: 100%;
+    height: 22.4px;
+    cursor: pointer;
+    box-shadow: 1.4px 1.4px 1.7px #f1f1f3, 0px 0px 1.4px #ffffff;
+    background: #f1f1f3;
+    border-radius: 15.1px;
+    border: 0.8px solid #f1f1f3;
+  }
+  input[type=range]::-moz-range-thumb {
+    box-shadow: 3.1px 3.1px 8.8px #4babcb, 0px 0px 3.1px #5fb4d1;
+    border: 5px solid #4babcb;
+    height: 50px;
+    width: 50px;
+    border-radius: 50px;
+    background: #4babcb;
+    cursor: pointer;
+  }
+  input[type=range]::-ms-track {
+    width: 100%;
+    height: 22.4px;
+    cursor: pointer;
+    background: transparent;
+    border-color: transparent;
+    color: transparent;
+  }
+  input[type=range]::-ms-fill-lower {
+    background: #dbdbe0;
+    border: 0.8px solid #f1f1f3;
+    border-radius: 30.2px;
+    box-shadow: 1.4px 1.4px 1.7px #f1f1f3, 0px 0px 1.4px #ffffff;
+  }
+  input[type=range]::-ms-fill-upper {
+    background: #f1f1f3;
+    border: 0.8px solid #f1f1f3;
+    border-radius: 30.2px;
+    box-shadow: 1.4px 1.4px 1.7px #f1f1f3, 0px 0px 1.4px #ffffff;
+  }
+  input[type=range]::-ms-thumb {
+    box-shadow: 3.1px 3.1px 8.8px #4babcb, 0px 0px 3.1px #5fb4d1;
+    border: 5px solid #4babcb;
+    height: 50px;
+    width: 50px;
+    border-radius: 50px;
+    background: #4babcb;
+    cursor: pointer;
+    height: 22.4px;
+  }
+  input[type=range]:focus::-ms-fill-lower {
+    background: #f1f1f3;
+  }
+  input[type=range]:focus::-ms-fill-upper {
+    background: #ffffff;
+  }
+
+  /* ------ */
+</style>
+{% endblock %}

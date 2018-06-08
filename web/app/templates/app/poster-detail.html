@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% block title %} {{poster.poster_id}} {% endblock %}
+{% block content %}
+<!-- <div id="content">
+  <h3> {{poster.poster_id}}: {{poster.title}}</h3>
+  <p> {{poster.hilight}} </p>
+  <label> Total vote: [[totalVote]] </label>
+  <br>
+  <br>
+  {% if user.is_sci_member %}
+  <button v-if="islike" @click="likeHandle({{poster.id}}, {{user.id}})" > ไม่ชอบ </button>
+  <button v-else @click="likeHandle({{poster.id}}, {{user.id}})" > ชอบ </button>
+  {% endif %}
+  {% if judgeable %}
+  <a href="/question/{{poster.id}}/">
+    <button type="submit"> ประเมิน </button>
+  </a>
+  {% endif %}
+
+</div> -->
+<div class="uk-container" id="content">
+  <div class="uk-card uk-card-default uk-card-body">
+    <article class="uk-article">
+      <h1 class="uk-article-title"> {{poster.poster_id}}: {{poster.title}} </h1>
+      <div>
+        <p class="content-title"> คนโหวต: [[totalVote]] </p>
+        {% if user.is_sci_member and user.role == '1' %}
+          <button class="uk-button unlike-button" v-if="islike" @click="likeHandle({{poster.id}}, {{user.id}})"> ไม่ชอบ </button>
+          <button class="uk-button like-button" v-else @click="likeHandle({{poster.id}}, {{user.id}})"> ชอบ </button>
+        {% endif %}
+        {% if judgeable and user.role != '1' %}
+          <a href="/question/{{poster.id}}/">
+            <button class="uk-button mybutton" type="submit"> ประเมิน </button>
+          </a>
+        {% endif %}
+      </div>
+      <hr class="uk-divider-icon">
+      <section>
+        <br>
+        {% if poster.student_1 %}
+        <label class="content-title">ผู้จัดทำ</label>
+        <ul class="content-detail">
+          <li> {{ poster.student_1 }}</li>
+          {% if poster.student_2 %}
+          <li> {{ poster.student_2 }}</li>
+          {% endif %}
+          {% if poster.student_3 %}
+          <li> {{ poster.student_3 }}</li>
+          {% endif %}
+          {% if poster.student_4 %}
+          <li> {{ poster.student_4 }}</li>
+          {% endif %}
+        </ul>
+        {% endif %}
+        <br>
+      </section>
+      <hr>
+      <section class="large-content">
+        <p class="content-title">คำอธิบาย</p>
+        <p class="tabbed">{{poster.hilight}} </p>
+      </section>
+      <br>
+    </article>
+  </div>
+</div>
+
+<script>
+  var content = new Vue({
+      el: '#content',
+      delimiters: ['[[', ']]'],
+      data: function () {
+        return {
+          'islike': ('{{vote}}' === "False") ? false : true,
+          'totalVote': '{{totalvote}}'
+        }
+      },
+
+      methods: {
+        parseBool: function (x) {
+          return (x === "False") ? false : true
+        },
+
+        likeHandle: function (poster, user) {
+          axios.post('/vote/', {'user':user, 'poster': poster})
+            .then((response) => {
+              this.islike = response.data['isLike']
+              this.totalVote = response.data['totalvote']
+            })
+        }
+      },
+  })
+</script>
+<style>
+  .mybutton {
+    color: white;
+    background-color: #a50d29;
+    font-size: 30px;
+    width: 20%;
+    height: 75px;
+  }
+  .like-button {
+    color: white;
+    background-color: #a50d29;
+    font-size: 30px;
+    width: 20%;
+    height: 75px;
+  }
+  .unlike-button {
+    color: white;
+    background-color: #000000;
+    font-size: 30px;
+    width: 20%;
+    height: 75px;
+  }
+
+  .uk-card-default {
+    background: #f9f9f9;
+    color: #666;
+    box-shadow: 0 5px 15px rgba(0,0,0,.08);
+    padding: 50px;
+    margin: 30px;
+  }
+
+  .large-content {
+    font-size: 24px;
+  }
+
+  .content-title {
+    font-size: 26px;
+  }
+
+  .content-detail {
+    font-size: 24px;
+  }
+
+  .tabbed{
+    margin-left: 5%;
+
+  }
+</style>
+{% endblock %}

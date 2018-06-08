@@ -1,0 +1,40 @@
+version: "2"
+services:
+
+  postgres:
+    image: postgres:10.4
+    volumes:
+      - ./postgres/initdb:/docker-entrypoint-initdb.d
+      - ./volume/postgres/backups:/backups
+      - ./volume/postgres/data:/var/lib/postgresql/data
+    env_file:
+      - env
+    restart: always
+
+  poster_1:
+    build: ./web
+    restart: always
+    env_file:
+      - env
+    command: "sh run.sh"
+
+  poster_2:
+    build: ./web
+    restart: always
+    env_file:
+      - env
+    command: "sh run.sh"
+
+  nginx:
+    image: nginx:1.13
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/dev.conf.d/:/etc/nginx/conf.d/
+      - ./volume/letsencrypt:/etc/letsencrypt/
+      - ./volume/log/nginx:/var/log/nginx/
+      - ./volume/log/letsencrypt:/var/log/letsencrypt/
+    env_file:
+      - env
+    restart: always

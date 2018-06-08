@@ -1,0 +1,122 @@
+.dropdown {
+    position: relative;
+    display: inline-block;
+    margin: 20px;
+    padding-left: 20px;
+}
+
+a.uk-navbar-toggle:visited {
+    color: white;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #f9f9f9;
+    min-width: 400px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    color: black;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #bb0404;
+    color: white;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+
+
+.uk-navbar-nav li a,
+.uk-navbar-nav li a:hover {
+    color: white;
+    font-size: 20px;
+}
+
+
+@media screen and (min-width: 1180px) {
+    .dropdown {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 1180px) {
+    .dropdown {
+        display: inline;
+    }
+    .uk-navbar-nav {
+        display: none;
+    }
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        right: 0;
+        background-color: #f9f9f9;
+        font-size: 20px;
+        min-width: 350px;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+    }
+
+}
+
+@media screen and (max-width: 430px) {
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        right: 0;
+        background-color: #f9f9f9;
+        font-size: 14px;
+        min-width: 200px;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+    }
+}
+
+
+.report-list{
+    width:40%; 
+    margin-left:40px; 
+    color:black;
+}
+
+@media screen and (max-width: 430px) {
+    .report-list{
+        margin-bottom:50px;
+        width:300px; 
+        margin-left:40px; 
+        color:black;
+    }
+}
+
+@media screen and (max-width: 1130px ){
+
+    .uk-form-width-large {
+        width:300px
+    }
+}
+
+@media screen and (max-width: 600px ){
+
+    .uk-form-width-large {
+        width:200px
+    }
+}
+
+@media screen and (max-width: 720px ){
+
+    .uk-form-width-large {
+        width:250px
+    }
+}

@@ -1,0 +1,87 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title> {% block title %} {% endblock %}</title>
+</head>
+<body>
+<script src="{% static 'js/vue.js' %}"></script>
+<script src="{% static 'js/axios.min.js' %}"></script>
+<script type="text/javascript">
+  axios.defaults.headers.common['X-CSRFToken'] = '{{csrf_token}}'
+</script>
+<link rel="stylesheet" href="{% static 'css/uikit.min.css' %}" />
+<script src="{% static 'js/uikit.min.js' %}"></script>
+<script src="{% static 'js/uikit-icons.min.js' %}"></script>
+<div id="app">
+  <div class="uk-position-relative">
+    <nav class="uk-navbar-container" uk-navbar="dropbar: true" style="background:linear-gradient(to bottom right,darkred,rgb(80, 3, 3) )">
+        <div class="uk-navbar-left">
+          <a href="/"> <img src="../../static/img/a.png" style="width:300px; margin: 10px;" /> </a>
+        </div>
+        <div class="uk-navbar-left">
+            <ul class="uk-navbar-nav">
+
+            </ul>
+
+        </div>
+        <div class="uk-navbar-right" style="margin-right:5%;">
+          {% if request.user.is_authenticated %}
+            <article class="uk-comment">
+              <header class="uk-comment-header uk-grid-medium uk-flex-middle" uk-grid>
+                <div class="uk-width-auto">
+                  <img class="uk-comment-avatar" src="{% static 'img/avatar.png' %}" alt="">
+                </div>
+                <div class="uk-width-auto">
+                  <h4 class="uk-comment-title uk-margin-remove" style="color:white"><a class="uk-link-reset" href="#" > {{user.username}} </a></h4>
+                  <ul class="uk-comment-meta uk-subnav uk-subnav-divider uk-margin-remove-top">
+                    <li><a href="/logout/" style="color:white">logout</a></li>
+                  </ul>
+                </div>
+              </header>
+            </div>
+          {% else %}
+            <form action="{% url 'social:begin' 'tu' %}">
+              <input class="uk-button uk-button-primary" type="submit" value='TU Login'>
+            </form>
+          {% endif %}
+        </div>
+
+
+    </nav>
+
+    <!-- <div class="uk-navbar-dropbar"></div> -->
+
+</div>
+</div>
+{% block content %} {% endblock %}
+<script type="text/javascript">
+var app = new Vue({
+  el: '#app',
+  delimiters: ['[[', ']]'],
+  data: function () {
+  return {}
+  }
+})
+</script>
+{% block script %} {% endblock %}
+
+<style>
+html{
+  width:100%;
+  height: 100%;
+}
+body{
+  width: 100%;
+  height: 100%;
+  background-color: #FFFFFF;
+}
+
+/* #app {
+  width: 100%;
+  height: 100%;
+} */
+</style>
+</body>
+</html>

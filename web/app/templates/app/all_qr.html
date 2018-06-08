@@ -1,0 +1,54 @@
+{% load static %}
+<html>
+  <head> <title> PosterQR </title></head>
+  <script src="{% static 'js/qrcode.min.js' %}"></script>
+  <body>
+    <div id="content">
+      <div class="row">
+        {% for page in pages %}
+          <br>
+          {% for poster in page %}
+            <div class="column">
+              <h3 style="margin-top: 10px; margin-bottom: 3px; padding-left: 20px;"> {{poster.poster_id}} </h3>
+              <p style="margin: 0px; padding-left: 20px;"> http://139.59.217.180/poster/{{poster.id}}/</p>
+              <div id="qr_{{poster.id}}" style="margin: 10px; padding-left: 20px;"></div>
+            </div>
+          {% endfor %}
+          <div class="pagebreak"> </div>
+        {% endfor %}
+      </div>
+    </div>
+    <script>
+      let ids = JSON.parse('{{ids}}')
+      ids.forEach(x => {
+        new QRCode(document.getElementById("qr_"+x), {
+          text: "http://139.59.217.180/poster/"+x+"/",
+          width: 192,
+          height: 192,
+        })
+      });
+    </script>
+  </body>
+
+  <style>
+    @page {
+        size: A4 landscape;
+    }
+    .column {
+      float: left;
+      width: 50%;
+      height: 330px;
+    }
+
+    .pagebreak {
+      page-break-after: always;
+    }
+
+    .row:after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+  </style>
+</html>
+

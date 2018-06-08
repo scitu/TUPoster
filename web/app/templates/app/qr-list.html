@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %} รายการ poster {% endblock %}
+{% block content %}
+<ul>
+  {% for poster in posters %}
+  <li> <a href="/getqr/{{poster.id}}"> GET QR </a>{{ poster.poster_id }} {{ poster.title }} </li>
+  {% endfor %}
+</ul>
+{% endblock %}

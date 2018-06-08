@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Home {% endblock %}
+{% block content%}
+<div class="uk-container" id="content">
+  {% if user and user.is_sci_member %}
+  <div class="uk-card uk-card-default uk-card-body" style="margin-top: 50px;">
+    <table class="uk-table uk-table-divider">
+      <caption>
+        <div class="uk-text-lead"> โปสเตอร์ที่ถูกใจ ({{vote_count}}/{{max_vote}})</div>
+        <div class="uk-text-meta"> *หนึ่งผู้ใช้สามารถโหวตได้ {{max_vote}} โปสเตอร์เท่านั้น </div>
+      </caption>
+      <tbody>
+        {% for vote in votes %}
+        <tr>
+          <td>{{vote.poster.poster_id}}</td>
+          <td>{{vote.poster.title}}</td>
+          <td>
+            <a href="/poster/{{vote.poster.id}}"> รายละเอียด </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+
+  <div class="uk-card uk-card-default uk-card-body" style="margin-top: 50px;">
+    <pre class="scd">
+      <p class="scd-title"> กำหนดการวันสัมมนวิชาการระดับปริญญาตรี (ปัญหาพิเศษ)
+      <br> ประจำปีการศึกษา 2560
+      <br> ในวันพฤหัสบดี ที่ 17 พฤษภาคม 2561 ณ โถงชั้นล่าง และห้อง S 106 บร.5
+      <br> คณะวิทยาศาสตร์และเทคโนโลยี มหาวิทยาลัยธรรมศาสตร์ ศูนย์รังสิต </p>
+      <table class="scd-content">
+        <tr>
+          <td> 08.30 – 09.00 น. </td>
+          <td>
+            ลงทะเบียน ณ ห้องประชุม S-106
+            นักศึกษาตรวจความพร้อมของโปสเตอร์
+          </td>
+        </tr>
+        <tr>
+          <td> 09.00 – 10.00 น. </td>
+          <td>
+            ช่วงที่ 1 นักศึกษายืนประจำโปสเตอร์
+          </td>
+        </tr>
+        <tr>
+          <td> 10.00 – 11.00 น. </td>
+          <td>
+            ช่วงที่ 2 นักศึกษายืนประจำโปสเตอร์
+          </td>
+        </tr>
+        <tr>
+          <td> 11.00 – 12.00 น. </td>
+          <td>
+            ช่วงที่ 3 นักศึกษายืนประจำโปสเตอร์
+          </td>
+        </tr>
+        <tr>
+          <td> 12.00 - 13.00 น. </td>
+          <td>
+            พักเที่ยง
+          </td>
+        </tr>
+        <tr>
+          <td> 13.00 – 13.10 น. </td>
+          <td>
+            ประธานกล่าวเปิดงาน
+          </td>
+        </tr>
+        <tr>
+          <td> 13.10 – 14.00 น. </td>
+          <td>
+            การเสวนาพิเศษเรื่อง ความสำเร็จของ start up ยุค Thailand 4.0:
+            "แผ่น DNA chip ตรวจสอบเชื้อปนเปื้อนในอาหารหรือเชื้อดื้อยา"
+            โดย คุณกวิน น้าวัฒนไพบูลย์ (ศิษย์เก่าสาขาฟิสิกส์)
+            ผู้ดำเนินรายการ: อาจารย์ ดร.สุริยะกิจ ย่อมมี
+          </td>
+        </tr>
+        <tr>
+          <td> 14.00 – 15.30 น. </td>
+          <td>
+            การแข่งขัน “Pitching” ในโครงการ Startup ของ ISC
+          </td>
+        </tr>
+        <tr>
+          <td> 15.30 – 16.00 น. </td>
+          <td>
+            ประกาศผลรางวัลและมอบใบประกาศนียบัตรสำหรับผู้รับรางวัล ประธานกล่าวปิดงาน
+          </td>
+        </tr>
+      </table>
+      <br>
+      <label> <span>หมายเหตุ</span> กำหนดการอาจมีการเปลี่ยนแปลงเพื่อความเหมาะสม </label>
+    </pre>
+  </div>
+  <br>
+  <br>
+</div>
+
+<script>
+  var content = new Vue({
+    el: '#content',
+    delimiters: ['[[', ']]'],
+  })
+</script>
+
+<style>
+
+#content {
+  width: 100%;
+  /* height: 100%; */
+}
+
+.scd-title {
+  font-size: 20px;
+  padding: 5px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  text-align: center;
+  }
+.scd {
+  font-size: 18px
+}
+.scd-content {
+  padding-left: 0%
+}
+.uk-card-default {
+  background: #f9f9f9;
+  color: #666;
+  box-shadow: 0 5px 15px rgba(0,0,0,.08);
+  padding: 50px;
+  margin: 30px;
+}
+
+</style>
+{% endblock %}

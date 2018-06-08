@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} ประเมิน {{poster.poster_id}} {% endblock %}
+{% block content %}
+<div class="uk-flex-center">
+  <div id="content">
+    <h2> โปสเตอร์ {{poster.poster_id}} </h2>
+    <h3> เรื่อง {{ poster.title }}</h3>
+    <form @submit.prevent="submitResult()">
+      <table class="uk-table uk-table-striped uk-table-small" id="score-table">
+        <tr>
+          <th> ข้อ </th>
+          <th> คำถาม </th>
+          <th> คะแนนที่ให้ </th>
+          <th> คะแนนเต็ม </th>
+        </tr>
+        <tr v-for="question, i in questions">
+          <td> [[i+1]] </td>
+          <td>
+            <p> [[question.message]] </p>
+            <br>
+            <input
+            class="uk-range"
+            type="range"
+            :qid="question.id"
+            :max="question.max_score"
+            @input="rangeHandle"
+            @change="rangeHandle"
+            v-model.number="scores[question.id]"
+            style="width:100%;">
+          </td>
+          <td> <input
+            class="uk-input"
+            type="number"
+            v-model.number="scores[question.id]"
+            :max="question.max_score">  </td>
+            <td> [[question.max_score]]  </td>
+          </tr>
+          <tr>
+            <td></td>
+            <td><center>รวม</center></td>
+            <td><center>[[totalScore]]</center></td>
+            <td><center>[[totalMaxScore]]</center></td>
+          </tr>
+          <tr>
+            <td>
+              <button class="uk-button" type="submit"> ส่ง </button>
+            </td>
+          </tr>
+        </table>
+      </form>
+    </div>
+  </div>
+  <script>
+  var content = new Vue({
+    el: '#content',
+    delimiters: ['[[', ']]'],
+    data: function () {
+      return {
+        'questions': null,
+        'scores': null,
+        'totalScore': 0,
+        'totalMaxScore': 0,
+      }
+    },
+
+    methods: {
+      calculateTotalScore: function () {
+        this.totalScore = 0
+        for(let k in this.scores) {
+          let value = this.scores[k]
+          this.totalScore += value
+        }
+      },
+
+      rangeHandle: function(e) {
+        let qid = e.target.attributes.qid.value
+        let val = e.target.value
+        this.scores[qid] = parseInt(val)
+        this.calculateTotalScore()
+      },
+
+      submitResult: function(e) {
+        let payload = {}
+        payload['user'] = "{{user.id}}"
+        payload['event'] = "{{event.id}}"
+        payload['poster'] = "{{poster.id}}"
+        payload['scores'] = this.scores
+        payload['questions'] = this.questions
+        axios.post('/sendscore/', payload)
+          .then((response) => {
+            if(response.status == 200) {
+              alert('ส่งคะแนนเรียบร้อย')
+            }
+          })
+          .catch((error) => {
+            alert("เกิดข้อผิดพลาด กรุณาลองใหม่")
+          })
+      }
+    },
+
+    mounted: function () {
+      axios.get('/qdetail/{{event.id}}/')
+        .then((response) => {
+          this.scores = {}
+          data = response.data
+          this.totalMaxScore = 0
+          this.scores = data['scores']
+          this.questions = data['questions']
+          this.questions.forEach((q) => {
+            this.totalMaxScore += q.max_score
+          })
+          this.calculateTotalScore()
+        })
+    }
+  })
+</script>
+<style>
+  #right-button {
+    align-items: right;
+    justify-content: right;
+  }
+
+  #score-table {
+    width: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10%;
+    margin-right: 10%;
+  }
+</style>
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends 'base.html' %} {% load static %} {% block title %} Home {% endblock %} {% block content%}
+<div class="uk-container" id="content">
+  <section style="padding: 10px">
+    <div class="uk-card uk-card-default uk-card-body">
+      <h2 class="uk-card-title"> Popular vote Top 10 </h2>
+      <table class="uk-table uk-table-divider">
+        <thead>
+          <tr>
+            <th>รหัสโปสเตอร์</th>
+            <th>ชื่อโปสเตอร์</th>
+            <th>จำนวนโหวต</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for poster in top_votes %}
+          <tr>
+            <td>{{poster.poster_id}}</td>
+            <td>{{poster.title}}</td>
+            <td>{{poster.vote_count}}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="uk-card uk-card-default uk-card-body">
+    <h2 class="uk-card-title"> รางวัลประเมิน </h2>
+    {% for item in rewards %}
+      <h4> {{ item.0 }} </h4>
+      {% for poster in item.1 %}
+        <table class="uk-table uk-table-divider">
+          <thead>
+            <tr>
+              <th>รหัสโปสเตอร์</th>
+              <th>ชื่อโปสเตอร์</th>
+              <th>คะแนน</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{poster.poster_id}}</td>
+              <td>{{poster.title}}</td>
+              <td>{{poster.score}}</td>
+            </tr>
+          </tbody>
+        </table>
+      {% endfor %}
+      <hr class="uk-divider-icon">
+      <br>
+      {% endfor %}
+    </div>
+    <br>
+    <br>
+    <br>
+</div>
+
+<script>
+  var content = new Vue({
+    el: '#content',
+    delimiters: ['[[', ']]'],
+  })
+</script>
+
+<style>
+  #content {
+    width: 100%;
+    /* height: 100%; */
+  }
+  .uk-card-default {
+    background: #f9f9f9;
+    color: #666;
+    box-shadow: 0 5px 15px rgba(0,0,0,.08);
+    padding: 50px;
+    margin: 20px;
+  }
+
+</style>
+{% endblock %}
