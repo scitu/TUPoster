@@ -1,3 +1,11 @@
+venv
+*.xlsx
+*.ipynb
+.~lock*
+**/migrations/**
+web/data/*.*
+backend/data/*.*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -72,6 +80,7 @@ target/
 # Jupyter Notebook
 .ipynb_checkpoints
 
+
 # pyenv
 .python-version
 
@@ -102,3 +111,4 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
